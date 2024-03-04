@@ -1,5 +1,4 @@
 DELETE FROM mart.f_customer_retention WHERE period_id = DATE_PART('week', '{{ds}}'::date);
-DELETE FROM mart.f_customer_retention WHERE period_id = DATE_PART('week', '{{ds}}'::date) - 1;
 
 INSERT INTO mart.f_customer_retention (new_customers_count, returning_customers_count, refunded_customer_count, period_name, period_id, item_id,
                                       new_customers_revenue, returning_customers_revenue, customers_refunded)
@@ -36,4 +35,5 @@ FROM (
        FROM mart.f_sales s
        JOIN mart.d_customer u ON s.customer_id = u.customer_id
        JOIN mart.d_calendar c ON s.date_id = c.date_id) AS tt
-GROUP BY weekly, item_id;
+GROUP BY weekly, item_id
+HAVING weekly = DATE_PART('week', '{{ds}}'::date);
